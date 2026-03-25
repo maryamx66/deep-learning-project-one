@@ -38,8 +38,8 @@ The training pipeline was built to maximize learning efficiency while aggressive
 - Hyperparameters: The Adam optimizer was initialized with a learning rate of 0.001, and the maximum number of training epochs was capped at 30.
 
 - Simultaneous Regularization Methods: To robustly prevent the model from overfitting the training data, two distinct regularization methods were executed simultaneously:
-  1- Dropout: A Dropout layer with a probability of 0.5 (p=0.5) was applied during the forward pass after the ReLU activations of both hidden layers. This prevents overfitting by randomly zeroing out neuron activations, forcing the network to learn redundant and robust representations.
+  1. Dropout: A Dropout layer with a probability of 0.5 (p=0.5) was applied during the forward pass after the ReLU activations of both hidden layers. This prevents overfitting by randomly zeroing out neuron activations, forcing the network to learn redundant and robust representations.
 
-  2- Weight Decay: L2 Regularization was applied by passing a weight decay factor of 1e-5 directly into the Adam optimizer. This penalizes excessively large weights, keeping the model simpler and less prone to memorizing noise.
+  2. Weight Decay: L2 Regularization was applied by passing a weight decay factor of 1e-5 directly into the Adam optimizer. This penalizes excessively large weights, keeping the model simpler and less prone to memorizing noise.
 
 - Model Selection and Early Stopping: The training loop monitored the validation loss at the end of every epoch. An early stopping mechanism was implemented with a patience of 5 epochs to halt training when the model stops evolving, saving computational resources and preventing late-stage overfitting. Whenever the validation loss reached a new low, a deep copy of the model's weights (best_model_zehra.pth) was saved to ensure we retained the best-performing iteration.

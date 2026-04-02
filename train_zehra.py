@@ -78,4 +78,4 @@ plt.title('Zehra - Model Training Process')
 plt.legend()
 plt.show()
 
-print(" The process is complete. The best model is ready under the name 'en_iyi_model_zehra.pth'.")
+print(" The process is complete. The best model is ready under the name 'best_model_zehra.pth'.")

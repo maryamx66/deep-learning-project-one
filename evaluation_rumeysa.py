@@ -10,19 +10,30 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 device = torch.device('cpu')
 
+# UPDATED: Architecture must match Emir's new Optimized model
 class DigitClassifier(nn.Module):
     def __init__(self):
         super(DigitClassifier, self).__init__()
         self.fc1 = nn.Linear(28 * 28, 128)
+        self.bn1 = nn.BatchNorm1d(128) # Added Batch Normalization
         self.fc2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)  # Added Batch Normalization
         self.fc3 = nn.Linear(64, 10)
         self.dropout = nn.Dropout(p=0.5)
+        
     def forward(self, x):
         x = x.view(-1, 28 * 28)
-        x = F.relu(self.fc1(x))
+        
+        x = self.fc1(x)
+        x = self.bn1(x)                # Added BatchNorm forward pass
+        x = F.relu(x)
         x = self.dropout(x)
-        x = F.relu(self.fc2(x))
+        
+        x = self.fc2(x)
+        x = self.bn2(x)                # Added BatchNorm forward pass
+        x = F.relu(x)
         x = self.dropout(x)
+        
         x = self.fc3(x)
         return x
 
@@ -30,6 +41,8 @@ model = DigitClassifier()
 try:
     state_dict = torch.load('best_model_zehra.pth', map_location=device)
     model.load_state_dict(state_dict, strict=False)
+    # model.eval() is already here, which is crucial because it tells BatchNorm 
+    # and Dropout to behave in "testing" mode rather than "training" mode.
     model.eval()
     print('[Model] Loaded successfully.')
 except Exception as e:

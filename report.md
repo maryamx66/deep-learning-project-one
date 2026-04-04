@@ -44,6 +44,30 @@ The training pipeline was built to maximize learning efficiency while aggressive
 
 - Model Selection and Early Stopping: The training loop monitored the validation loss at the end of every epoch. An early stopping mechanism was implemented with a patience of 5 epochs to halt training when the model stops evolving, saving computational resources and preventing late-stage overfitting. Whenever the validation loss reached a new low, a deep copy of the model's weights (`best_model_zehra.pth`) was saved to ensure we retained the best-performing iteration.
 
+## 3.1 Optimization Techniques and Comparetive Analysis
+
+To evaluate the impact of advanced training methodologies, we added four more optimization techniques and compared the baseline model against an the optimized variant incorporating; Batch Normalization, He Initialization, Learning Rate Scheduling, and Gradient Clipping.
+
+### Baseline Model Analysis (Figure 1)
+
+The baseline model demonstrated successful learning, with both training and validation errors decreasing steadily. However, the training process was halted prematurely around Epoch 21 due to the early stopping mechanism. As the model approached a local minimum, the fixed learning rate (0.001) likely caused the optimizer to oscillate, preventing further improvements in validation loss and triggering the patience counter.
+![Figure 1: Model Before Optimization](images/model-training-zehra1.jpeg)
+
+### Optimized Model Analysis (Figure 2)
+
+The optimized model exhibited a notably different and more stable training trajectory.
+
+- Enhanced Stability: The validation loss curve in the optimized model is exceptionally smooth, particularly after Epoch 10. This increased stability is primarily attributed to Batch Normalization, which reduces internal covariate shift by normalizing layer inputs, and Gradient Clipping, which prevents volatile parameter updates.
+
+- Deeper Convergence: Unlike the baseline, the optimized model successfully trained for the full 30 epochs without triggering early stopping. This was achieved through the implementation of Learning Rate Scheduling (Step Decay). By dropping the learning rate by a factor of 0.1 every 10 epochs, the optimizer was able to take smaller, more precise steps later in the training process, settling deeper into the minimum without oscillating out of it.
+
+- Effective Initialization: The use of He (Kaiming) Initialization ensured that the initial weight scales were properly tailored for the ReLU activations, preventing vanishing signals in the early epochs and allowing the network to maintain a strong learning signal from the very first batch.
+  ![Figure 2: Model After Optimization](images/train_optimized2.png)
+
+### Conclusion of Comparison
+
+While both models successfully classified the digits without overfitting, the integration of these optimization techniques resulted in a more robust training pipeline. The optimized model benefited from smoother convergence and the ability to train longer, demonstrating the practical necessity of learning rate scheduling and normalization in deep learning architectures.
+
 ## 4. Evaluation and Performance Metrics
 
 The final phase of the project involved a rigorous evaluation of the trained model using the isolated test dataset to determine its real-world generalization capabilities.

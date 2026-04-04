@@ -16,6 +16,10 @@ model = DigitClassifier().to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
 
+# ADDED: Learning Rate Scheduler (Step Decay)
+# Drops the learning rate by a factor of 0.1 every 10 epochs
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+
 # Model Selection and Early Stopping Variables
 best_val_loss = float('inf') 
 best_model_wts = copy.deepcopy(model.state_dict())
@@ -37,6 +41,11 @@ for epoch in range(30): # Max 30
         outputs = model(images)
         loss = criterion(outputs, labels)
         loss.backward()
+
+        # ADDED: Gradient Clipping
+        # Rescales the gradient to prevent exploding updates before stepping
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+        
         optimizer.step()
         running_loss += loss.item()
     
@@ -53,7 +62,10 @@ for epoch in range(30): # Max 30
     train_losses.append(avg_train_loss)
     val_losses.append(avg_val_loss)
     
-    print(f"Epoch {epoch+1}: Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f}")
+    print(f"Epoch {epoch+1}: Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f} | LR: {scheduler.get_last_lr()[0]:.6f}")
+
+    # ADDED: Step the learning rate scheduler at the end of each epoch
+    scheduler.step()
 
     #  Model Selection and Early Stopping 
     if avg_val_loss < best_val_loss:
@@ -74,7 +86,7 @@ plt.plot(train_losses, label='training error')
 plt.plot(val_losses, label='validation error')
 plt.xlabel('Epoch number')
 plt.ylabel('Loss')
-plt.title('Zehra - Model Training Process')
+plt.title('Zehra - Model Training Process (Optimized)')
 plt.legend()
 plt.show()
 

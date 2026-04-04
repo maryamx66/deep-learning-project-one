@@ -44,9 +44,37 @@ The training pipeline was built to maximize learning efficiency while aggressive
 
 - Model Selection and Early Stopping: The training loop monitored the validation loss at the end of every epoch. An early stopping mechanism was implemented with a patience of 5 epochs to halt training when the model stops evolving, saving computational resources and preventing late-stage overfitting. Whenever the validation loss reached a new low, a deep copy of the model's weights (`best_model_zehra.pth`) was saved to ensure we retained the best-performing iteration.
 
+## 3.1 Optimization Techniques and Comparetive Analysis
+
+To evaluate the impact of advanced training methodologies, we added four more optimization techniques and compared the baseline model against an the optimized variant incorporating; Batch Normalization, He Initialization, Learning Rate Scheduling, and Gradient Clipping.
+
+### Baseline Model Analysis (Figure 1)
+
+The baseline model demonstrated successful learning, with both training and validation errors decreasing steadily. However, the training process was halted prematurely around Epoch 21 due to the early stopping mechanism. As the model approached a local minimum, the fixed learning rate (0.001) likely caused the optimizer to oscillate, preventing further improvements in validation loss and triggering the patience counter.
+
+![Figure 1: Model Before Optimization](images/model-training-zehra1.jpeg)
+_Figure 1: Model Before Optimization_
+
+### Optimized Model Analysis (Figure 2)
+
+The optimized model exhibited a notably different and more stable training trajectory.
+
+- Enhanced Stability: The validation loss curve in the optimized model is exceptionally smooth, particularly after Epoch 10. This increased stability is primarily attributed to Batch Normalization, which reduces internal covariate shift by normalizing layer inputs, and Gradient Clipping, which prevents volatile parameter updates.
+
+- Deeper Convergence: Unlike the baseline, the optimized model successfully trained for the full 30 epochs without triggering early stopping. This was achieved through the implementation of Learning Rate Scheduling (Step Decay). By dropping the learning rate by a factor of 0.1 every 10 epochs, the optimizer was able to take smaller, more precise steps later in the training process, settling deeper into the minimum without oscillating out of it.
+
+- Effective Initialization: The use of He (Kaiming) Initialization ensured that the initial weight scales were properly tailored for the ReLU activations, preventing vanishing signals in the early epochs and allowing the network to maintain a strong learning signal from the very first batch.
+
+  ![Figure 2: Model After Optimization](images/train_optimized2.png)
+  _Figure 2: Model After Optimization_
+
+### Conclusion of Comparison
+
+While both models successfully classified the digits without overfitting, the integration of these optimization techniques resulted in a more robust training pipeline. The optimized model benefited from smoother convergence and the ability to train longer, demonstrating the practical necessity of learning rate scheduling and normalization in deep learning architectures.
+
 ## 4. Evaluation and Performance Metrics
 
-The final phase of the project involved a rigorous evaluation of the trained model using the isolated test dataset to determine its real-world generalization capabilities.
+The final phase of the project involved a rigorous evaluation of the trained model using the isolated test dataset to determine its real-world generalization capabilities as well as a comparative analysis of the training optimizations.
 
 ### Model State Loading:
 
@@ -68,10 +96,44 @@ A heatmap of the confusion matrix is generated and saved as `confusion_matrix.pn
 
 The script identifies the specific indices where predictions do not match the true labels and plots a grid of up to 16 misclassified images (`misclassified_samples.png`). Manually reviewing the errors helps determine if the model is failing on clear numbers, or if the mistakes are isolated to highly ambiguous, poorly written digits that even a human might struggle to classify.
 
+## 4.1 Comparative Analysis of Optimization Techniques
+
+To evaluate the impact of advanced training methodologies, we compared our baseline model against an optimized variant incorporating Batch Normalization, He Initialization, Learning Rate Scheduling (Step Decay), and Gradient Clipping.
+
+### Baseline Model Convergence:
+
+The baseline model demonstrated successful learning, but the training process was halted prematurely around Epoch 21 by the early stopping mechanism. As the model approached a local minimum, the fixed learning rate (0.001) caused the optimizer to oscillate, preventing further improvements in validation loss.
+
+### Optimized Model Stability:
+
+The optimized model exhibited a notably more stable training trajectory. The validation loss curve smoothed out significantly, primarily due to Batch Normalization reducing internal covariate shift and Gradient Clipping preventing volatile parameter updates.
+
+### Deeper Convergence:
+
+The optimized model successfully trained for the full 30 epochs without triggering early stopping. The Step Decay scheduler progressively shrank the learning rate, allowing the optimizer to settle deeper into the loss minimum without oscillating.
+
+## 4.2 Final Results of Evaluation Metrics:
+
+The final evaluation on the isolated test set yielded the following results:
+
+### Baseline Model Accuracy: 97.14%
+
+![](images/confusion-mat-before.png)
+
+### Optimized Model Accuracy: 97.16%
+
+![](images/confusion-mat-after.png)
+
+While the absolute increase in accuracy is marginal (+0.02%), this is a known phenomenon when classifying the MNIST dataset using Multilayer Perceptrons. The baseline model was already capable of reaching the "accuracy ceiling" for this specific architectural complexity.
+
+However, the added optimization techniques helped in the stability and reliability of the training process. The optimized model achieved this peak performance with a significantly smoother convergence trajectory and without prematurely stalling, proving that the network learned efficiently and robustly.
+
 ## Conclusion
 
 This project successfully demonstrated the end-to-end development of a neural network for image classification. By systematically addressing data preprocessing, model architecture, and training regularization, we established a robust pipeline tailored to the MNIST dataset.
 
 Our architectural decision to prioritize depth over width in the Multilayer Perceptron allowed the model to effectively learn complex, hierarchical representations of the handwritten digits. Furthermore, aggressively combating overfitting through the simultaneous application of Dropout layers, L2 regularization (weight decay), and an automated early stopping mechanism proved crucial for ensuring the model generalized well to unseen data.
+
+Building upon this strong baseline, the integration of advanced training methodologies—specifically Batch Normalization, He Initialization, Learning Rate Scheduling, and Gradient Clipping—proved highly effective. While the baseline model had already approached the accuracy ceiling for this specific dataset, our comparative analysis demonstrated that these optimizations significantly enhanced the stability of the convergence trajectory and allowed the model to settle deeper into the loss minimum without oscillating.
 
 Finally, our evaluation methodology provided actionable insights that extended beyond a simple accuracy metric. By generating a class-wise performance report, confusion matrices, and visualizations of misclassified samples, we established a framework to accurately diagnose the model's failure modes and identify overlapping class boundaries. These granular findings confirm that the methodologies selected from our coursework were both theoretically sound and practically effective for this specific classification problem.

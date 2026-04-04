@@ -51,7 +51,9 @@ To evaluate the impact of advanced training methodologies, we added four more op
 ### Baseline Model Analysis (Figure 1)
 
 The baseline model demonstrated successful learning, with both training and validation errors decreasing steadily. However, the training process was halted prematurely around Epoch 21 due to the early stopping mechanism. As the model approached a local minimum, the fixed learning rate (0.001) likely caused the optimizer to oscillate, preventing further improvements in validation loss and triggering the patience counter.
+
 ![Figure 1: Model Before Optimization](images/model-training-zehra1.jpeg)
+_Figure 1: Model Before Optimization_
 
 ### Optimized Model Analysis (Figure 2)
 
@@ -62,7 +64,9 @@ The optimized model exhibited a notably different and more stable training traje
 - Deeper Convergence: Unlike the baseline, the optimized model successfully trained for the full 30 epochs without triggering early stopping. This was achieved through the implementation of Learning Rate Scheduling (Step Decay). By dropping the learning rate by a factor of 0.1 every 10 epochs, the optimizer was able to take smaller, more precise steps later in the training process, settling deeper into the minimum without oscillating out of it.
 
 - Effective Initialization: The use of He (Kaiming) Initialization ensured that the initial weight scales were properly tailored for the ReLU activations, preventing vanishing signals in the early epochs and allowing the network to maintain a strong learning signal from the very first batch.
+
   ![Figure 2: Model After Optimization](images/train_optimized2.png)
+  _Figure 2: Model After Optimization_
 
 ### Conclusion of Comparison
 

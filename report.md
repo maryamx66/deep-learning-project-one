@@ -48,14 +48,14 @@ The training pipeline was built to maximize learning efficiency while aggressive
 
 To evaluate the impact of advanced training methodologies, we added four more optimization techniques and compared the baseline model against an the optimized variant incorporating; Batch Normalization, He Initialization, Learning Rate Scheduling, and Gradient Clipping.
 
-### Baseline Model Analysis (Figure 1)
+### Baseline Model Analysis
 
 The baseline model demonstrated successful learning, with both training and validation errors decreasing steadily. However, the training process was halted prematurely around Epoch 21 due to the early stopping mechanism. As the model approached a local minimum, the fixed learning rate (0.001) likely caused the optimizer to oscillate, preventing further improvements in validation loss and triggering the patience counter.
 
 ![Figure 1: Model Before Optimization](images/model-training-zehra1.jpeg)
 _Figure 1: Model Before Optimization_
 
-### Optimized Model Analysis (Figure 2)
+### Optimized Model Analysis
 
 The optimized model exhibited a notably different and more stable training trajectory.
 
